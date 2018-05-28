@@ -22,7 +22,7 @@
 #include "BH1750.h"
 #include "INA219.h"
 
-#define DBHOSTDIST "tcp://172.18.58.89:3306/ruche"
+#define DBHOSTDIST "tcp://172.18.58.00:3306/ruche"
 #define USERDIST "ruche"
 #define PASSWORDDIST "Touchard72"
 #define USERLOC "root"
@@ -54,8 +54,21 @@ try
 }
 catch (sql::SQLException e)
     {     
+       cout << "Erreur lors de connection sur la base de donnée distante, renvoie des données sur la base de donnée locale. Message : " << e.what() << endl;
+       //exit(1);
+    
+    try
+    {
+        driver = get_driver_instance();
+        connection = driver->connect( DBHOSTLOC, USERLOC, PASSWORDLOC);
+        
+    }
+    catch (sql::SQLException e)
+    {   
        cout << "Erreur lors de la connection. Message : " << e.what() << endl;
        exit(1);
+    } 
+
     }
 
     stmt = connection->createStatement();
