@@ -4,8 +4,8 @@
             Execution    : ./enregistrerDonnees
                            Pour executer périodiquement toutes les 10 minutes ajouter avec crontab
 		           en tant que super utilisateur (sudo crontab -e)
- 
- */
+
+*/
 
 #include <stdlib.h>
 
@@ -43,44 +43,48 @@ int main(int argc, char* argv[]) {
     BH1750 capteurBH(0x23);
     INA219 capteurINA(0x40);
 
-try
-{
-    driver = get_driver_instance();
-    connection = driver->connect( DBHOSTDIST, USERDIST, PASSWORDDIST);
-}
-catch (sql::SQLException e)
-{
-    cout << "Erreur lors de connection sur la base de donnée distante, renvoie des données sur la base de données locale. Message : " << e.what() << endl;
-
     try
     {
         driver = get_driver_instance();
-        connection = driver->connect( DBHOSTLOC, USERLOC, PASSWORDLOC);
-
+        connection = driver->connect( DBHOSTDIST, USERDIST, PASSWORDDIST);
     }
     catch (sql::SQLException e)
     {
-       cout << "Erreur lors de la connection. Message : " << e.what() << endl;
-       exit(1);
+        cout << "Erreur lors de connection sur la base de donnée distante, renvoie des données sur la base de données locale. Message : " << e.what() << endl;
+
+        try
+        {
+            driver = get_driver_instance();
+            connection = driver->connect( DBHOSTLOC, USERLOC, PASSWORDLOC);
+
+        }
+        catch (sql::SQLException e)
+        {
+            cout << "Erreur lors de la connection. Message : " << e.what() << endl;
+            exit(1);
+        }
+
     }
 
-}
+    capteurBH.activer();
+    capteurBH.reset();
+    capteurBH.configurer(BH1750_CONTINUOUS_HIGH_RES_MODE_2);
 
     stmt = connection->createStatement();
 
     // selectionne la base de donnees ruche
     stmt->execute("USE ruche");
 
-    // insertion d'une mesure de température en Celsius, 
-    // de température en Fahrenheit, 
+    // insertion d'une mesure de température en Celsius,
+    // de température en Fahrenheit,
     // de pression en hPa,
-    // et d'humidité relative en % 
-    // dans la table mesures
+    // et d'humidité relative en %
+    // dans la table mesures de la base se données ruche
     ostringstream sql;
-    sql << "INSERT INTO mesures(ruches_idRuches, tempval, tempfahr, pressionval, humidval, eclairementval, tension, courant ) VALUES (" 
-            << 1 << "," <<  fixed << setprecision(2) << capteurBME.lireTemperature_DegreCelsius() << "," 
+    sql << "INSERT INTO mesures(ruches_idRuches, tempval, tempfahr, pressionval, humidval, tension, courant, eclairementval ) VALUES (" 
+            << 1 << "," <<  fixed << setprecision(2) << capteurBME.lireTemperature_DegreCelsius() << ","
             << fixed << setprecision(2) << capteurBME.lireTemperature_Fahrenheit() << ","
-            << fixed << setprecision(2) << capteurBME.lirePression() << "," 
+            << fixed << setprecision(2) << capteurBME.lirePression() << ","
             << fixed << setprecision(2) << capteurBME.lireHumidite() << ","
             << fixed << setprecision(3) << capteurINA.lireTension_V() << ","
             << fixed << setprecision(3) << capteurINA.lireCourant_A() << ","
