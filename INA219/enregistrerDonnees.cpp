@@ -2,10 +2,7 @@
  \detail    Prérequis    : sudo apt-get install libmysqlcppconn-dev
             Compilation  : g++ enregistrerDonnees.cpp I2C.cpp  INA219.cpp -lmysqlcppconn -o enregistrerDonnees
             Execution    : ./enregistrerDonnees
-                           Pour executer périodiquement toutes les 10 minutes ajouter avec crontab
-		           en tant que super utilisateur (sudo crontab -e)
- 
- */
+*/
 
 #include <stdlib.h>
 #include <cppconn/prepared_statement.h>
@@ -26,6 +23,7 @@
 #define USERLOC "root"
 #define DBHOSTLOC "tcp://127.0.0.1:3306/ruche"
 #define PASSWORDLOC "toto"
+#define IDRUCHE "1"
 
 
 
@@ -70,11 +68,13 @@ catch (sql::SQLException e)
     // selectionne la base de donnees ruche
     stmt->execute("USE ruche");
 
-    // insertion d'une mesure de température en Celsius, de température en Fahrenheit, de pression, et d'humidité dans la table mesures
+    // insertion d'une mesure de tension en Volt et de courant en Ampere dans la table mesures
     ostringstream sql;
-    sql << "INSERT INTO mesures(ruches_idRuches, tension, courant ) VALUES (" 
-            << 1 << "," <<  fixed << setprecision(3) << capteur.lireTension_V() << "," 
-            << fixed << setprecision(3) << capteur.lireCourant_A() << ")";
+    sql << "INSERT INTO mesures(tension, courant, ruches_idRuches ) VALUES (" 
+            <<  fixed << setprecision(3) << capteur.lireTension_V() << ","
+            << fixed << setprecision(3) << capteur.lireCourant_A() << ","
+            << IDRUCHE << ")";
+    
     cout << endl << sql.str() << endl;
     stmt->execute(sql.str());
 

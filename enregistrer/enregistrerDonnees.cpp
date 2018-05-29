@@ -2,18 +2,16 @@
  \detail    Prérequis    : sudo apt-get install libmysqlcppconn-dev
             Compilation  : g++ enregistrerDonnees.cpp I2C.cpp  BME280.cpp BH1750.cpp INA219.cpp -lmysqlcppconn -o enregistrerDonnees
             Execution    : ./enregistrerDonnees
-                           Pour executer périodiquement toutes les 10 minutes ajouter avec crontab
-		                   en tant que super utilisateur (sudo crontab -e)
-
+            Pour executer périodiquement toutes les 10 minutes ajouter avec crontab
+		    en tant que super utilisateur (sudo crontab -e)
 */
 
-#include <stdlib.h>
 
 #include <cppconn/driver.h>
 #include <cppconn/statement.h>
 #include <cppconn/exception.h>
-#include "mysql_connection.h"
 
+#include <stdlib.h>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -28,6 +26,7 @@
 #define USERLOC "local"
 #define DBHOSTLOC "tcp://127.0.0.1:3306/ruche"
 #define PASSWORDLOC "toto"
+#define IDRUCHE "1"
 
 
 
@@ -84,14 +83,15 @@ int main(int argc, char* argv[]) {
     // et de l'éclairement en lux
     // dans la table mesures de la base se données ruche
     ostringstream sql;
-    sql << "INSERT INTO mesures(ruches_idRuches, tempval, tempfahr, pressionval, humidval, tension, courant, eclairementval ) VALUES (" 
-            << 1 << "," <<  fixed << setprecision(2) << capteurBME.lireTemperature_DegreCelsius() << ","
-            << fixed << setprecision(2) << capteurBME.lireTemperature_Fahrenheit() << ","
-            << fixed << setprecision(2) << capteurBME.lirePression() << ","
+    sql << "INSERT INTO mesures(eclairementval, pressionval, tempval, humidval, tempfahr, tension, courant, ruches_idRuches) VALUES (" 
+            << fixed << setprecision(2) << capteurBH.lireEclairement_Lux() << ","
+            << fixed << setprecision(2) << capteurBME.lirePression() << "," 
+            << fixed << setprecision(2) << capteurBME.lireTemperature_DegreCelsius() << ","
             << fixed << setprecision(2) << capteurBME.lireHumidite() << ","
+            << fixed << setprecision(2) << capteurBME.lireTemperature_Fahrenheit() << ","
             << fixed << setprecision(3) << capteurINA.lireTension_V() << ","
             << fixed << setprecision(3) << capteurINA.lireCourant_A() << ","
-            << fixed << setprecision(2) << capteurBH.lireEclairement_Lux() << ")";
+            << IDRUCHE << ")";
     cout << endl << sql.str() << endl;
     stmt->execute(sql.str());
 
