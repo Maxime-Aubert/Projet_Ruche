@@ -3,14 +3,14 @@
             Compilation  : g++ enregistrerDonnees.cpp I2C.cpp  BME280.cpp BH1750.cpp INA219.cpp -lmysqlcppconn -o enregistrerDonnees
             Execution    : ./enregistrerDonnees
                            Pour executer périodiquement toutes les 10 minutes ajouter avec crontab
-		           en tant que super utilisateur (sudo crontab -e)
+		                   en tant que super utilisateur (sudo crontab -e)
 
 */
 
 #include <stdlib.h>
 
 #include <cppconn/driver.h>
-#include <cppconn/prepared_statement.h>
+#include <cppconn/statement.h>
 #include <cppconn/exception.h>
 #include "mysql_connection.h"
 
@@ -25,7 +25,7 @@
 #define DBHOSTDIST "tcp://172.18.58.89:3306/ruche"
 #define USERDIST "ruche"
 #define PASSWORDDIST "Touchard72"
-#define USERLOC "root"
+#define USERLOC "local"
 #define DBHOSTLOC "tcp://127.0.0.1:3306/ruche"
 #define PASSWORDLOC "toto"
 
