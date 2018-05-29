@@ -3,6 +3,20 @@
 
 using namespace std;
 
+/*!
+    @brief  constructor
+*/
+
+BH1750::BH1750(int addressBH1750)
+{
+    deviceI2C = new I2C(addressBH1750);
+    resolution = 1.0;
+
+}
+
+/*!
+    @brief  destructor
+*/
 
 BH1750::~BH1750()
 {
@@ -15,7 +29,6 @@ float BH1750::lireEclairement_Lux()
     unsigned short level;
     level = deviceI2C->I2CReadReg16(0x00);
     level = ((level & 0x00FF) << 8) | ((level & 0xFF00) >> 8); // inversion msb lsb
-    
     // Convert raw value to lux and return
     if (resolution == 1.0){
     	return (float)level / 1.2;
@@ -25,8 +38,10 @@ float BH1750::lireEclairement_Lux()
     }
 }
 
+/*!
+    @brief  Methode pour configuer le mode de fct
+*/
 
-//Methode pour configuer le mode de fct
 void BH1750::activer(void)
 {
     deviceI2C->I2CWrite(BH1750_POWER_ON);

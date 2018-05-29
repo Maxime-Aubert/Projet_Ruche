@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
     try
     {
         driver = get_driver_instance();
-        connection = driver->connect( DBHOSTDIST, USERDIST, PASSWORDDIST);
+        connection = driver->connect(DBHOSTDIST, USERDIST, PASSWORDDIST);
     }
     catch (sql::SQLException e)
     {
