@@ -78,7 +78,10 @@ int main(int argc, char* argv[]) {
     // insertion d'une mesure de température en Celsius,
     // de température en Fahrenheit,
     // de pression en hPa,
-    // et d'humidité relative en %
+    // d'humidité relative en %,
+    // de tension en Volt
+    // de courant en Ampere
+    // et de l'éclairement en lux
     // dans la table mesures de la base se données ruche
     ostringstream sql;
     sql << "INSERT INTO mesures(ruches_idRuches, tempval, tempfahr, pressionval, humidval, tension, courant, eclairementval ) VALUES (" 
