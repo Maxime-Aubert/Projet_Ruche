@@ -1,5 +1,7 @@
 #include "I2C.h"
 
+
+// Constructeur
 I2C::I2C(int address, int bus)
 {
     char filename[20];
@@ -45,6 +47,8 @@ int I2C::i2c_smbus_access(char rw, uint8_t command, int size, i2c_smbus_data *da
     return ioctl (fd, I2C_SMBUS, &args) ;
 }
 
+
+// Méthode permettant de lire une donnée
 unsigned char I2C::I2CRead()
 {
     union i2c_smbus_data data;
@@ -55,6 +59,8 @@ unsigned char I2C::I2CRead()
           return data.byte & 0xFF ;
 }
 
+
+// Méthode permettant de lire une donnée de 8 bits
 unsigned char I2C::I2CReadReg8(int reg)
 {
     union i2c_smbus_data data;
@@ -65,6 +71,8 @@ unsigned char I2C::I2CReadReg8(int reg)
           return data.word & 0xFFFF ;
 }
 
+
+// Méthode permettant de lire une donnée de 16 bits
 unsigned short I2C::I2CReadReg16(int reg)
 {
     union i2c_smbus_data data;
@@ -76,11 +84,14 @@ unsigned short I2C::I2CReadReg16(int reg)
 }
 
 
+// Méthode permettant d’écrire une donnée
 unsigned char I2C::I2CWrite(int data)
 {
     return i2c_smbus_access (I2C_SMBUS_WRITE, data, I2C_SMBUS_BYTE, NULL) ;
 }
 
+
+// Méthode permettant d’écrire une donnée de 8 bits
 unsigned char I2C::I2CWriteReg8(int reg, int value)
 {
     union i2c_smbus_data data ;
@@ -89,6 +100,8 @@ unsigned char I2C::I2CWriteReg8(int reg, int value)
     return i2c_smbus_access (I2C_SMBUS_WRITE, reg, I2C_SMBUS_BYTE_DATA, &data) ;
 }
 
+
+// Méthode permettant d’écrire une donnée de 16 bits
 unsigned short I2C::I2CWriteReg16(int reg, int value)
 {
     union i2c_smbus_data data ;

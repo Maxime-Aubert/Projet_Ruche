@@ -4,7 +4,7 @@
     #include "I2C.h"
     #include <unistd.h>
 
-    #define ADRESSE_BH1750 0x23  // adresse I2C de la BH1750
+    #define ADRESSE_BH1750 0x23  // Adresse I2C du capteur BH1750
 
 
     #define BH1750_POWER_DOWN 0x00
@@ -31,10 +31,14 @@
 
     class BH1750 {
     public:
+        // Le constructeur
         BH1750(int addressBH1750=ADRESSE_BH1750);
+
+        // Le destructeur
         ~BH1750();
         float lireEclairement_Lux();
-        // méthode pour configurer le mode
+
+        // Méthode pour configurer le mode
         void configurer(int mode=BH1750_ONE_TIME_HIGH_RES_MODE_2);
         void activer(void);
         void desactiver(void);

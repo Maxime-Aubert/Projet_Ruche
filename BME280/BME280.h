@@ -8,8 +8,9 @@
 #include <stdint.h>
 #include <math.h>
 
-#define ADRESS_BME280                 0x77
+#define ADRESS_BME280                 0x77 // Adresse I2C du capteur BME280
 
+// Nom des registres :
 #define BME280_REGISTER_DIG_T1        0x88
 #define BME280_REGISTER_DIG_T2        0x8A
 #define BME280_REGISTER_DIG_T3        0x8C
@@ -41,6 +42,8 @@
 #define BME280_REGISTER_TEMPDATA      0xFA
 #define BME280_REGISTER_HUMIDDATA     0xFD
 
+
+// Structure pour enregistrer les constantes de calibration
 typedef struct
 {
   uint16_t dig_T1;
@@ -65,6 +68,8 @@ typedef struct
   int8_t   dig_H6;
 } bme280_calib_data;
 
+
+// Registres des données pour la pression température et humidité
 typedef struct
 {
   uint8_t pmsb;
@@ -88,8 +93,13 @@ class BME280
 {
 
 public:
+    // Le constructeur
     BME280(int addressBME280=ADRESS_BME280);
+
+    // Le constructeur
     ~BME280();
+    
+    // Méthodes pour lire la température, le pression et l'humidité
     float lireTemperature_DegreCelsius();
     float lireTemperature_Fahrenheit();
     float lirePression();
@@ -98,8 +108,8 @@ public:
 
 private:
     I2C *deviceI2C;
-    bme280_calib_data calib;
-    bme280_raw_data raw;
+    bme280_calib_data calib;    // Calibration
+    bme280_raw_data raw;        // Registres
     void readCalibrationData();
     void getRawData();
     float h;

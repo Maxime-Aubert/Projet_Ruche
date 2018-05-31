@@ -3,6 +3,7 @@
 
 using namespace std;
 
+// Constructeur
 BME280::BME280(int addressBME280)
 {
     deviceI2C = new I2C(addressBME280);
@@ -21,12 +22,16 @@ BME280::BME280(int addressBME280)
         }
 }
 
+
+// Destructeur
 BME280::~BME280()
 {
     if (deviceI2C != NULL)
         delete deviceI2C;
 }
 
+
+// Méthode lisant les constantes de calibrations
 void BME280::readCalibrationData()
 {
     calib.dig_T1 = (uint16_t)deviceI2C->I2CReadReg16(BME280_REGISTER_DIG_T1);
@@ -51,6 +56,7 @@ void BME280::readCalibrationData()
     calib.dig_H6 = (int8_t)deviceI2C->I2CReadReg8(BME280_REGISTER_DIG_H6);
 }
 
+// Méthode permettant d’obtenir les données brut
 void BME280::getRawData()
 {
     deviceI2C->I2CWrite(0xf7);
@@ -82,6 +88,7 @@ void BME280::getRawData()
     raw.humidity = (raw.humidity | raw.hlsb);
 }
 
+// Méthode permettant d’obtenir les constantes de calibrations de la température
 int32_t BME280::getTemperatureCalibration()
 {
     getRawData();
@@ -93,7 +100,7 @@ int32_t BME280::getTemperatureCalibration()
     return var1 + var2;
 }
 
-//Retourne la température en degré Celsius
+// Méthode pour obtenir la valeur de température en degré Celsiu
 float BME280::lireTemperature_DegreCelsius()
 {
     int32_t t_fine = getTemperatureCalibration();
@@ -101,7 +108,7 @@ float BME280::lireTemperature_DegreCelsius()
     return T_Celsius/100;
 }
 
-//Retourne la température en degré Fahrenheit
+// Méthode pour obtenir la valeur de température en degré Fahrenheitt
 float BME280::lireTemperature_Fahrenheit()
 {
     float T_Celsius = lireTemperature_DegreCelsius();
@@ -109,7 +116,7 @@ float BME280::lireTemperature_Fahrenheit()
     return T_Fahrenheit;
 }
 
-//Retourne la pression en hPa
+// Méthode pour obtenir la valeur de pression en hPa
 float BME280::lirePression()
 {
     int32_t t_fine = getTemperatureCalibration();
@@ -133,7 +140,7 @@ float BME280::lirePression()
     return (float)p/25600;
 }
 
-//Retourne le taux d'humidité en %
+// Méthode pour obtenir la valeur d'humidité relative en %
 float BME280::lireHumidite()
 {
     int32_t v_x1_u32r;

@@ -54,18 +54,20 @@ struct i2c_smbus_ioctl_data
 class I2C
 {
 public:
+    // Le constructeur
     I2C(int address, int bus=1);
-    unsigned char I2CRead();
-    unsigned char I2CReadReg8(int reg);
-    unsigned short I2CReadReg16(int reg);
+
+    unsigned char I2CRead(); // Méthode permettant de lire une donnée
+    unsigned char I2CReadReg8(int reg); // Méthode permettant de lire une donnée de 8 bits
+    unsigned short I2CReadReg16(int reg); // Méthode permettant de lire une donnée de 16 bits
     int I2CReadBlockData (int reg, int length, int *values);
 
     bool getError();
 
-    unsigned char I2CWrite(int data);
-    unsigned char I2CWriteReg8(int reg, int value);
-    unsigned short I2CWriteReg16(int reg, int value);
-    int I2CWriteBlockData (int reg, int length, int *data);
+    unsigned char I2CWrite(int data); // Méthode permettant d’écrire une donnée
+    unsigned char I2CWriteReg8(int reg, int value); // Méthode permettant d’écrire une donnée de 8 bits
+    unsigned short I2CWriteReg16(int reg, int value); // Méthode permettant d’écrire une donnée de 16 bits
+    int I2CWriteBlockData (int reg, int length, int *data);;
 
 private:
 inline int i2c_smbus_access (char rw, uint8_t command, int size, union i2c_smbus_data *data);

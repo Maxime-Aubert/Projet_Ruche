@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
     // La gestion d'erreur se fait avec les exceptions (try catch)
     try
     {
-        // Création d'une connexion à la base de données locale
+        // Création d'une connexion à la base de données distante
         driver = get_driver_instance();
         connection = driver->connect(DBHOSTDIST, USERDIST, PASSWORDDIST);
     }

@@ -3,27 +3,24 @@
 
 using namespace std;
 
-/*!
-    @brief  constructor
-*/
 
+// Constructeur
 BH1750::BH1750(int addressBH1750)
 {
     deviceI2C = new I2C(addressBH1750);
     resolution = 1.0;
-
 }
 
-/*!
-    @brief  destructor
-*/
 
+// Destructeur
 BH1750::~BH1750()
 {
    if (deviceI2C != NULL)
         delete deviceI2C;
 }
 
+
+// Méthode pour obtenir la valeur de l'éclairement en lx
 float BH1750::lireEclairement_Lux()
 {
     unsigned short level;
@@ -38,9 +35,8 @@ float BH1750::lireEclairement_Lux()
     }
 }
 
-/*!
-    @brief  Methode pour configuer le mode de fct
-*/
+
+// Méthode pour configuer le mode de fct :
 
 void BH1750::activer(void)
 {
@@ -65,7 +61,7 @@ void BH1750::configurer(int mode)
         case BH1750_CONTINUOUS_LOW_RES_MODE:
         case BH1750_ONE_TIME_HIGH_RES_MODE:
         case BH1750_ONE_TIME_LOW_RES_MODE:
-            // apply mode 1 res 1 lx
+            
             deviceI2C->I2CWrite(mode);
             resolution = 1.0;
             deviceI2C->delay_ms(180);
@@ -73,15 +69,15 @@ void BH1750::configurer(int mode)
 
         case BH1750_CONTINUOUS_HIGH_RES_MODE_2:
         case BH1750_ONE_TIME_HIGH_RES_MODE_2:
-            // apply mode 2 res 0.5 lx
+            
             deviceI2C->I2CWrite(mode);
             resolution = 0.5;
             deviceI2C->delay_ms(180);
             break;
 
         default:
-            // Invalid measurement mode
-            printf("Invalid measurement mode !\n");
+            // Mode de mesure invalide
+            printf("Mode de mesure invalide !\n");
             break;
     }
 }

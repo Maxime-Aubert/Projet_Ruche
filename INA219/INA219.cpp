@@ -1,23 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   INA219.cpp
- * Author: maubert
- * 
- * Created on 23 avril 2018, 11:37
- */
-
 #include "INA219.h"
 #include "I2C.h"
 
-#define INA219_ADDRESS    0x40
 
-#define INA219_REG_CONFIG 0x00
-
+// Constructeur
 INA219::INA219(int addressINA219, float  _quantum)
 {
     deviceI2C = new I2C(addressINA219);
@@ -41,12 +26,16 @@ INA219::INA219(int addressINA219, float  _quantum)
      }
 }
 
+
+// Destructeur
 INA219::~INA219()
 {
    if (deviceI2C != NULL)
         delete deviceI2C;
 }
 
+
+// Méthode pour fixer la calibration
 void INA219::fixerCalibration_16V()
 {
 
@@ -58,6 +47,8 @@ void INA219::fixerCalibration_16V()
 
 }
 
+
+// Méthode pour obtenir la valeur de tension en Volt
 float INA219::lireTension_V()
 {
 
@@ -72,18 +63,22 @@ float INA219::lireTension_V()
 
 }
 
-float INA219::lireTensionShunt_mV()
+
+// Méthode pour obtenir la valeur de tension du shunt en millivolt
+float INA219::lireTensionShunt_mV(v
 { // la tension aux bornes du shunt 0.01 ohm en mV
 
     float shuntVoltage;
     short data,vb;
 
     data = deviceI2C->I2CReadReg16(INA219_REG_SHUNTVOLTAGE);
-    data = ((data & 0x00FF) << 8) | ((data & 0xFF00) >> 8); // inversion msb lsb
-    shuntVoltage = 9.76E-3 * (float)data;   // 9,765625  microV par bit
+    data = ((data & 0x00FF) << 8) | ((data & 0xFF00) >> 8);
+    shuntVoltage = 9.76E-3 * (float)data;
     return shuntVoltage;
 }
 
+
+// Méthode pour obtenir la valeur de courant en Ampere
 float INA219::lireCourant_A()
 {
 
@@ -97,6 +92,8 @@ float INA219::lireCourant_A()
 
 }
 
+
+// Méthode pour obtenir la valeur de courant moyen en Ampere
 float INA219::lireCourantMoyen_A(int nb)
 {
   float som = 0.0;
@@ -109,6 +106,8 @@ float INA219::lireCourantMoyen_A(int nb)
   return som / i;
 }
 
+
+// Méthode pour obtenir la valeur de puissance en Watt
 float INA219::lirePuissance_W()
 {
 
@@ -121,6 +120,7 @@ float INA219::lirePuissance_W()
 
 }
 
+// Fonction pour réaliser une adaptation d'échelle de valeur
 float INA219::map(float x, float in_min, float in_max, float out_min, float out_max)
 {
 
@@ -128,17 +128,15 @@ float INA219::map(float x, float in_min, float in_max, float out_min, float out_
 
 }
 
+// Méthode pour obtenir la valeur de niveau de charge en %
 float INA219::lireBatterieSOC(){
-     // Rm is the resistance of the metallic path through the cell including the terminals,
-     // electrodes and inter-connections.
-     // Ra is the resistance of the electrochemical path including the electrolyte and the separator.
-     // The internal resistance of a galvanic cell is temperature dependent
-     // here I take Ra+Rm = 1.5 Ohm at 25 °C
-     float ResistanceInt = 1.5;
-     float fem = INA219::lireTension_V() - (ResistanceInt * INA219::lireCourant_A());
-     float soc = INA219::map(fem, 8.0, 9.55, 10, 100);
+
+float ResistanceInt = 1.5;
+float fem = INA219::lireTension_V() - (ResistanceInt * INA219::lireCourant_A());
+float soc = INA219::map(fem, 8.0, 9.55, 10, 100);
      if (soc > 100) soc = 100;
      if (soc < 0)   soc = 0;
+
      return soc;
 
 }

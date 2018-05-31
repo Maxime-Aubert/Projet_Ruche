@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
        // de tension en Volt,
        // de courant en Ampere,
        // de date,
-       // et d'identifiant de la ruche
+       // et le numéro d'identifiant de la ruche
        // dans la table mesures de la base se données ruche
        sql << "INSERT INTO mesures(eclairementval, pressionval, tempval, poidsval, humidval, tempfahr, tension, courant, date, ruches_idRuches) VALUES (" 
             << fixed << setprecision(2) << eclairementval << ","

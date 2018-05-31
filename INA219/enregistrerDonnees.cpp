@@ -2,6 +2,8 @@
  \detail    Prérequis    : sudo apt-get install libmysqlcppconn-dev
             Compilation  : g++ enregistrerDonnees.cpp I2C.cpp  INA219.cpp -lmysqlcppconn -o enregistrerDonnees
             Execution    : ./enregistrerDonnees
+            Pour executer périodiquement toutes les 10 minutes ajouter avec crontab
+		    en tant que super utilisateur (sudo crontab -e)
 */
 
 #include <stdlib.h>
@@ -32,17 +34,16 @@ using namespace sql;
 
 int main(int argc, char* argv[]) {
 
-    Driver* driver;
-    Connection* connection;
-    Statement *stmt;
-    INA219 capteur(0x40);
+    Driver* driver;         // Pour établir une connexion au serveur MySQL
+    Connection* connection; // Pour établir une connexion au serveur MySQL
+    Statement *stmt;        // Pour exécuter des requêtes simples
+    INA219 capteur(0x40);   // Déclaration du capteur INA219 à l'adresse par défaut 0x40
 
+// La gestion d'erreur se fait avec les exceptions (try catch)
 try
 {
+    // Création d'une connexion à la base de données distante
     driver = get_driver_instance();
-    
-    //connection = driver -> connect("172.18.58.89", "ruche", "Touchard72");
-    //connection = driver -> connect("127.0.0.1:3306", "root", "toto");
     connection = driver->connect( DBHOSTDIST, USERDIST, PASSWORDDIST);
 }
 catch (sql::SQLException e)
@@ -51,6 +52,7 @@ catch (sql::SQLException e)
        //exit(1);
     try
     {
+        // Création d'une connexion à la base de données locale
         driver = get_driver_instance();
         connection = driver->connect( DBHOSTLOC, USERLOC, PASSWORDLOC);
         
@@ -63,12 +65,15 @@ catch (sql::SQLException e)
        
     }
 
+    // Création d'un objet qui permet d'effectuer des requêtes sur la base de données
     stmt = connection->createStatement();
 
-    // selectionne la base de donnees ruche
+    // Selectionne la base de donnees ruche
     stmt->execute("USE ruche");
 
-    // insertion d'une mesure de tension en Volt et de courant en Ampere dans la table mesures
+    // Insertion d'une mesure de tension en Volt,
+    // de courant en Ampere
+    // et le numéro d'identifiant de la ruche dans la table mesures
     ostringstream sql;
     sql << "INSERT INTO mesures(tension, courant, ruches_idRuches ) VALUES (" 
             <<  fixed << setprecision(3) << capteur.lireTension_V() << ","
@@ -78,10 +83,13 @@ catch (sql::SQLException e)
     cout << endl << sql.str() << endl;
     stmt->execute(sql.str());
 
+    // Libération de la mémoire avant de quitter
     delete stmt;
 
     connection -> close();
     delete connection;
+
     cout << "Done bye" << endl;
+
     return 0;
 }

@@ -29,13 +29,15 @@ using namespace sql;
 
 int main(int argc, char* argv[]) {
 
-    Driver* driver;
-    Connection* connection;
-    Statement *stmt;
-    BH1750 capteur(0x23);
+    Driver* driver;         // Pour établir une connexion au serveur MySQL
+    Connection* connection; // Pour établir une connexion au serveur MySQL
+    Statement *stmt;        // Pour exécuter des requêtes simples
+    BH1750 capteur(0x23);   // Déclaration du capteur BH1750 à l'adresse par défaut 0x23
 
+    // La gestion d'erreur se fait avec les exceptions (try catch)
     try
 {
+    // Création d'une connexion à la base de données distante  
     driver = get_driver_instance();
     connection = driver->connect( DBHOSTDIST, USERDIST, PASSWORDDIST);
 }
@@ -45,6 +47,7 @@ catch (sql::SQLException e)
     
     try
     {
+        // Création d'une connexion à la base de données locale
         driver = get_driver_instance();
         connection = driver->connect( DBHOSTLOC, USERLOC, PASSWORDLOC);
         
@@ -56,13 +59,15 @@ catch (sql::SQLException e)
     } 
        
 }
-
+    
+    // Création d'un objet qui permet d'effectuer des requêtes sur la base de données
     stmt = connection->createStatement();
 
-    // selectionne la base de donnees ruche
+    // Selectionne la base de données ruche
     stmt->execute("USE ruche");
 
-    // insertion d'une mesure de température en Celsius, de température en Fahrenheit, de pression, et d'humidité dans la table mesures
+    // Insertion d'une mesure d'éclairement en lx
+    // et le numéro d'identifiant de la ruche dans la table mesures
     ostringstream sql;
     sql << "INSERT INTO mesures(eclairementval, ruches_idRuches ) VALUES (" 
     <<  fixed << setprecision(2) << capteur.lireEclairement_Lux() << ","
@@ -70,12 +75,15 @@ catch (sql::SQLException e)
     
     cout << endl << sql.str() << endl;
     stmt->execute(sql.str());
-
+    
+    // Libération de la mémoire avant de quitter
     delete stmt;
 
     connection -> close();
     delete connection;
+
     cout << "Done bye" << endl;
+
     return 0;
 }
  

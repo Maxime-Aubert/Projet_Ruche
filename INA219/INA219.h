@@ -1,16 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   INA219.h
- * Author: maubert
- *
- * Created on 23 avril 2018, 11:37
- */
-
 #ifndef INA219_H
 #define INA219_H
 
@@ -21,7 +8,10 @@
 #include <math.h>
 #include <unistd.h>
 
-#define ADRESSE_INA219                          0x40
+#define ADRESSE_INA219                          0x40 // Adresse I2C du capteur INA219
+
+
+// Adresse des Registres internes du composant :
 
 #define INA219_READ                             0x01
 
@@ -79,11 +69,18 @@ class INA219
 {
 
     public:
-    // le constructeur
+    // Le constructeur
     INA219(int addressINA219=ADRESSE_INA219, float _quantum=3.991);
-    // le destructeur
+
+    // Le destructeur
     ~INA219();
     
+    // Les méthodes pour lire la tension en Volt,
+    // le courant en Ampere,
+    // le courant moyen en Ampere,
+    // la puissance en Watt,
+    // la tension du shunt en Volt
+    // et le niveau de charge en %
     float lireTension_V();
     float lireCourant_A();
     float lireCourantMoyen_A(int nb);
@@ -97,6 +94,7 @@ class INA219
     bool  error;
     float quantum;		      
     float shunt;		      
+    
     // Fonction pour réaliser une adaptation d'échelle de valeur
     float map(float x, float in_min, float in_max, float out_min, float out_max);
 };
