@@ -35,15 +35,17 @@ using namespace sql;
 
 int main(int argc, char* argv[]) {
 
-    Driver* driver;
-    Connection* connection;
-    Statement *stmt;
-    BME280 capteurBME(0x77);
-    BH1750 capteurBH(0x23);
-    INA219 capteurINA(0x40);
+    Driver* driver;          // Pour établir une connexion au serveur MySQL
+    Connection* connection;  // Pour établir une connexion au serveur MySQL
+    Statement *stmt;         // Pour exécuter des requêtes simples
+    BME280 capteurBME(0x77); // Déclaration du capteur BME280 à l'adresse par défaut 0x77
+    BH1750 capteurBH(0x23);  // Déclaration du capteur BH1750 à l'adresse par défaut 0x23
+    INA219 capteurINA(0x40); // Déclaration du capteur INA219 à l'adresse par défaut 0x40
 
+    // La gestion d'erreur se fait avec les exceptions (try catch)
     try
     {
+        // Création d'une connexion à la base de données locale
         driver = get_driver_instance();
         connection = driver->connect(DBHOSTDIST, USERDIST, PASSWORDDIST);
     }
@@ -53,6 +55,7 @@ int main(int argc, char* argv[]) {
 
         try
         {
+            // Création d'une connexion à la base de données locale
             driver = get_driver_instance();
             connection = driver->connect( DBHOSTLOC, USERLOC, PASSWORDLOC);
 
@@ -69,17 +72,18 @@ int main(int argc, char* argv[]) {
     capteurBH.reset();
     capteurBH.configurer(BH1750_CONTINUOUS_HIGH_RES_MODE_2);
 
+    // Création d'un objet qui permet d'effectuer des requêtes sur la base de données
     stmt = connection->createStatement();
 
-    // selectionne la base de donnees ruche
+    // Selectionne la base de données ruche
     stmt->execute("USE ruche");
 
-    // insertion d'une mesure de température en Celsius,
+    // Insertion d'une mesure de température en Celsius,
     // de température en Fahrenheit,
     // de pression en hPa,
     // d'humidité relative en %,
-    // de tension en Volt
-    // de courant en Ampere
+    // de tension en Volt,
+    // de courant en Ampere,
     // et de l'éclairement en lux
     // dans la table mesures de la base se données ruche
     ostringstream sql;
@@ -94,11 +98,14 @@ int main(int argc, char* argv[]) {
             << IDRUCHE << ")";
     cout << endl << sql.str() << endl;
     stmt->execute(sql.str());
-
+    
+    // Libération de la mémoire avant de quitter
     delete stmt;
 
     connection -> close();
     delete connection;
+
     cout << "Done bye" << endl;
+
     return 0;
 }

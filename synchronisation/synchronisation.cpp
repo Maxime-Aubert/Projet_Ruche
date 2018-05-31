@@ -30,11 +30,11 @@ using namespace sql;
 
 int main(int argc, char* argv[]) {
 
-    Driver* driver;
-    Connection* conLocale;
-    Connection* conDistante;
-    Statement * stmtLocale;
-    Statement * stmtDistante;
+    Driver* driver;           // Pour établir une connexion au serveur MySQL
+    Connection* conLocale;    // Pour établir une connexion au serveur MySQL de la base de données locale
+    Connection* conDistante;  // Pour établir une connexion au serveur MySQL de la base de données distante
+    Statement * stmtLocale;   // Pour exécuter des requêtes simples sur la base de données locale
+    Statement * stmtDistante; // Pour exécuter des requêtes simples sur la base de données distante
     ResultSet*  resLocale;
     ResultSet*  resDistante;
 
@@ -44,8 +44,10 @@ int main(int argc, char* argv[]) {
     int ruches_idRuches;
     ostringstream sql;
 
+    // La gestion d'erreur se fait avec les exceptions (try catch)
     try
     {
+        // Création d'une connexion à la base de données distante et locale
         driver = get_driver_instance();
         conDistante = driver->connect( DBHOSTDIST, USERDIST, PASSWORDDIST);
         conLocale = driver->connect(DBHOSTLOC, USERLOC, PASSWORDLOC);
@@ -56,11 +58,18 @@ int main(int argc, char* argv[]) {
        cout << "Erreur lors des connections sur les serveurs, Message : " << e.what() << endl;
        exit(1);
     }
+    
+    // Création d'un objet qui permet d'effectuer des requêtes sur la base de données locale
     stmtLocale = conLocale->createStatement();
+
+    // Exécution d'une requete SELECT : ici on sélectionne tous les enregistrements
+    // de la table mesures
     resLocale = stmtLocale->executeQuery("SELECT * FROM mesures");
 
+    // Création d'un objet qui permet d'effectuer des requêtes sur la base de données distante
     stmtDistante = conDistante->createStatement();
 
+    // Exploitation du résultat de la requête
     while(resLocale->next()) {
        eclairementval=resLocale->getDouble(2);
        pressionval=resLocale->getDouble(3);
@@ -75,7 +84,19 @@ int main(int argc, char* argv[]) {
 
        sql.str("");
        sql.clear();
-
+    
+       // Insertion des valeurs
+       // d'éclairement en lux,
+       // de pression en hPa,
+       // de température en Celsius,
+       // de poids en g,
+       // d'humidité relative en %,
+       // de température en Fahrenheit,
+       // de tension en Volt,
+       // de courant en Ampere,
+       // de date,
+       // et d'identifiant de la ruche
+       // dans la table mesures de la base se données ruche
        sql << "INSERT INTO mesures(eclairementval, pressionval, tempval, poidsval, humidval, tempfahr, tension, courant, date, ruches_idRuches) VALUES (" 
             << fixed << setprecision(2) << eclairementval << ","
             << fixed << setprecision(2) << pressionval << ","
@@ -93,14 +114,19 @@ int main(int argc, char* argv[]) {
 
 
     }
-    //stmtLocale = conLocale->createStatement();
+    
+    // Exécution d'une requete DELETE : ici on supprime tous les enregistrements
+    // de la table mesures
     stmtLocale->execute("DELETE FROM `mesures`");
     
+    // Libération de la mémoire avant de quitter
     delete stmtDistante;
     delete stmtLocale;
     delete conLocale;
     delete conDistante;
+
     cout << "Done bye" << endl;
+
     return 0;
     
  
