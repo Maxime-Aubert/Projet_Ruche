@@ -35,8 +35,8 @@ int main(int argc, char* argv[]) {
     Connection* conDistante;  // Pour établir une connexion au serveur MySQL de la base de données distante
     Statement * stmtLocale;   // Pour exécuter des requêtes simples sur la base de données locale
     Statement * stmtDistante; // Pour exécuter des requêtes simples sur la base de données distante
-    ResultSet*  resLocale;
-    ResultSet*  resDistante;
+    ResultSet*  resLocale;    // Objet contenant le résultat de la requete de la base de données locale
+    ResultSet*  resDistante;  // Objet contenant le résultat de la requete de la base de données distante
 
     double eclairementval, pressionval, tempval, poidsval, humidval;
     double tempfahr, tension, courant;
@@ -81,8 +81,11 @@ int main(int argc, char* argv[]) {
        courant=resLocale->getDouble(9);
        date=resLocale->getString(10);
        ruches_idRuches=resLocale->getInt(11);
-
+        
+       // Vide le flux
        sql.str("");
+
+       // Efface les défauts
        sql.clear();
     
        // Insertion des valeurs
@@ -109,7 +112,10 @@ int main(int argc, char* argv[]) {
             << date << "' ,"
             << ruches_idRuches << ")";
 
+       // Affichage pour contrôle
        cout << endl << sql.str() << endl;
+       
+       // Exécution de la requete
        stmtDistante->execute(sql.str());
 
 
@@ -124,6 +130,8 @@ int main(int argc, char* argv[]) {
     delete stmtLocale;
     delete conLocale;
     delete conDistante;
+    delete resLocale;
+    delete resDistante;
 
     cout << "Done bye" << endl;
 
