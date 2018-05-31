@@ -29,7 +29,6 @@
 #define IDRUCHE "1"
 
 
-
 using namespace std;
 using namespace sql;
 
