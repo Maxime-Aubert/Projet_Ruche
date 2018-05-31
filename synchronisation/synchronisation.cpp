@@ -117,8 +117,6 @@ int main(int argc, char* argv[]) {
        
        // Exécution de la requete
        stmtDistante->execute(sql.str());
-
-
     }
     
     // Exécution d'une requete DELETE : ici on supprime tous les enregistrements
