@@ -96,7 +96,11 @@ int main(int argc, char* argv[]) {
             << fixed << setprecision(3) << capteurINA.lireTension_V() << ","
             << fixed << setprecision(3) << capteurINA.lireCourant_A() << ","
             << IDRUCHE << ")";
+    
+    // Affichage pour contrôle
     cout << endl << sql.str() << endl;
+
+    // Exécution de la requete
     stmt->execute(sql.str());
     
     // Libération de la mémoire avant de quitter

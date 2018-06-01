@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
        // d'éclairement en lux,
        // de pression en hPa,
        // de température en Celsius,
-       // de poids en g,
+       // de poids en kg,
        // d'humidité relative en %,
        // de température en Fahrenheit,
        // de tension en Volt,
