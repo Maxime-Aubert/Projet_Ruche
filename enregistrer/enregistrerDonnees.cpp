@@ -83,8 +83,9 @@ int main(int argc, char* argv[]) {
     // d'humidité relative en %,
     // de tension en Volt,
     // de courant en Ampere,
-    // et de l'éclairement en lux
-    // dans la table mesures de la base se données ruche
+    // de l'éclairement en lux
+    // et le numéro d'identifiant de la ruche
+    // dans la table mesures de la base de données ruche
     ostringstream sql;
     sql << "INSERT INTO mesures(eclairementval, pressionval, tempval, humidval, tempfahr, tension, courant, ruches_idRuches) VALUES (" 
             << fixed << setprecision(2) << capteurBH.lireEclairement_Lux() << ","
